@@ -53,13 +53,14 @@ public class TelegramNotifierJob implements Job {
 
     private String responseToChatMessage(SubsquidIndexerStatus[] responseObject) {
         String header = "Subsquid Indexers: \n";
-        String body = Arrays.stream(responseObject).map((status) -> format("*Indexer URL:* %s\n"
-            + "```\nHydra Version: %s\n"
+        String body = Arrays.stream(responseObject).map((status) -> format("*Network: %s*\n"
+            + "```\nURL: %s\n"
+            + "Hydra Version: %s\n"
             + "Synced: %s\n"
             + "Last Imported Block: %s\n"
             + "Target Block: %s\n"
             + "Sync progress: %.2f%%\n"
-            + "```", status.getUrl(), status.getHydraVersion(), status.isInSync(),
+            + "```", status.getNetwork(), status.getUrl(), status.getHydraVersion(), status.isInSync(),
             status.getLastComplete(),
             status.getChainHeight(),
             100.0 * status.getLastComplete() / status.getChainHeight()))

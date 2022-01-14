@@ -10,6 +10,7 @@ public class SubsquidIndexerStatus {
     private boolean inSync;
     private int lastComplete;
     private int maxComplete;
+    private String network;
     private String url;
 
     public int getChainHeight() {
@@ -68,9 +69,18 @@ public class SubsquidIndexerStatus {
         this.url = url;
     }
 
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
+    }
+
     @Override
     public String toString() {
         return new ToStringCreator(this)
+            .append("network", this.network)
             .append("url", this.url)
             .append("chainHeight", this.chainHeight)
             .append("head", this.head)
