@@ -1,7 +1,13 @@
 package net.subsquid.telegrambot.beans;
 
+import static net.subsquid.telegrambot.Constants.TOKEN;
+
+import com.pengrad.telegrambot.TelegramBot;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 import org.quartz.JobDetail;
 import org.quartz.SimpleTrigger;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +20,16 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class AppConfiguration {
+
+    @Bean
+    public TelegramBot bot() {
+        return new TelegramBot.Builder(System.getProperty(TOKEN))
+            .okHttpClient(
+                new OkHttpClient.Builder()
+                    .addInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY))
+                    .build()
+            ).build();
+    }
 
     @Bean
     public JobDetailFactoryBean jobDetail() {

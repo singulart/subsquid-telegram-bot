@@ -1,7 +1,15 @@
 package net.subsquid.telegrambot.beans;
 
-import java.util.List;
+import static java.lang.String.format;
+import static net.subsquid.telegrambot.Constants.CHANNEL;
+
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
+import java.util.Arrays;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import net.subsquid.telegrambot.SubsquidIndexerStatus;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -19,11 +27,13 @@ public class TelegramNotifierJob implements Job {
     private String dataFeedURL;
 
     private final RestTemplate restTemplate;
-
+    private final TelegramBot bot;
+    private final String telegramChannelId = System.getProperty(CHANNEL);
 
     @Autowired
-    public TelegramNotifierJob(RestTemplate restTemplate) {
+    public TelegramNotifierJob(RestTemplate restTemplate, TelegramBot bot) {
         this.restTemplate = restTemplate;
+        this.bot = bot;
     }
 
     @Override
@@ -31,9 +41,29 @@ public class TelegramNotifierJob implements Job {
         log.info("Executing the job");
         var responseObject = restTemplate.getForObject(dataFeedURL, SubsquidIndexerStatus[].class);
         if(responseObject != null) {
-            log.info("TODO Implement me");
+            String chatNotificationText = responseToChatMessage(responseObject);
+            SendResponse sendResponse = bot.execute(
+                new SendMessage(telegramChannelId, chatNotificationText).parseMode(ParseMode.MarkdownV2)
+            );
+            log.info(sendResponse.toString());
         } else {
             log.warning("Did not receive indexer list");
         }
+    }
+
+    private String responseToChatMessage(SubsquidIndexerStatus[] responseObject) {
+        String header = "Subsquid Indexers: \n";
+        String body = Arrays.stream(responseObject).map((status) -> format("*Indexer URL:* %s\n"
+            + "```\nHydra Version: %s\n"
+            + "Synced: %s\n"
+            + "Last Imported Block: %s\n"
+            + "Target Block: %s\n"
+            + "Sync progress: %.2f%%\n"
+            + "```", status.getUrl(), status.getHydraVersion(), status.isInSync(),
+            status.getLastComplete(),
+            status.getChainHeight(),
+            100.0 * status.getLastComplete() / status.getChainHeight()))
+            .collect(Collectors.joining("\n\n"));
+        return header + body;
     }
 }
