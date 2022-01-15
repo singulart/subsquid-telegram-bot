@@ -21,3 +21,14 @@ The `server.port` property is only required if you run both Telegram bot and its
 # Running in Prod
 `java -jar target/telegram-bot-0.0.1-SNAPSHOT.jar`
 
+# Docker
+
+Run the data feed first. Assume that it's running, check its IP: 
+
+`docker inspect indexer-api | grep IPAddress`
+
+Then, use the IP of the data feed in the `data.feed.url` environment variable when running the bot:
+
+`docker run -d -p 8081:8081 -e "JAVA_TOOL_OPTIONS=-DBOT_TOKEN=_________:______________________ -DCHAT_ID=-00000000000 -Dserver.port=8081 -Ddata.feed.url=http://<IP retrieved like explained above>:8080/statuses" --name tg-bot isonar/subsquid-telegram-bot`
+
+Maybe there's an easier way to do it... 

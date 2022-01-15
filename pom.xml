@@ -15,6 +15,7 @@
 	<description>Simple Telegram Bot sending periodic notifications about the statuses of the deployed Subsquid indexers</description>
 	<properties>
 		<java.version>11</java.version>
+		<image.path>docker.io/isonar/subsquid-telegram-bot</image.path>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -43,6 +44,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.1.4</version>
+				<configuration>
+					<to>
+						<image>${image.path}</image>
+					</to>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
