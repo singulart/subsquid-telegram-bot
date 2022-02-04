@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "data.feed.url",
+      "type": "java.lang.String",
+      "description": "URL of the data feed to fetch statuses from."
+    },
+    {
+      "name": "repeat.interval.secs",
+      "type": "java.lang.Integer",
+      "description": "Time interval (in seconds) for Quartz to re-query the statuses."
+    },
+    {
+      "name": "connect.timeout.millis",
+      "type": "java.lang.Integer",
+      "description": "Outbound call 'connect timeout' in milliseconds."
+    },
+    {
+      "name": "read.timeout.millis",
+      "type": "java.lang.Integer",
+      "description": "Outbound call 'read timeout' in milliseconds."
+    },
+    {
+      "name": "batch.size",
+      "type": "java.lang.Integer",
+      "description": "Number of indexers to be announced in the single Telegram message."
+    }
+  ] }
